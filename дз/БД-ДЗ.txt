@@ -1,0 +1,64 @@
+CREATE TABLE PostList
+(
+    post VARCHAR(20) NOT NULL,
+    pay  INT NOT NULL,
+    CONSTRAINT check_pay CHECK (pay > 0),
+    employee_id_fk INT REFERENCES StructureCompany(employee_id) UNIQUE PRIMARY KEY
+);
+CREATE TABLE SubdivisionList
+(
+    subdivision_name VARCHAR(20) NOT NULL ,
+    subdivision_id   SERIAL,
+    PRIMARY KEY (subdivision_id)
+
+);
+CREATE TABLE StructureCompany
+(
+    employee_id SERIAL,
+    surname    VARCHAR(20),
+    name       VARCHAR(20) NOT NULL,
+    patronymic VARCHAR(20),
+    gender     CHAR NOT NULL,
+    dob        date NOT NULL ,
+    year       INT NOT NULL,
+    struct_id  INT PRIMARY KEY,
+    experience INT,
+    boss_id INT REFERENCES StructureCompany(boss_id),
+    toxicity INT,
+
+);
+
+UPDATE StructureCompany
+SET year =  date_part('year',age(dob::date));
+
+UPDATE PostList
+SET pay = pay + 10000
+FROM StructureCompany
+WHERE experience > 10;
+
+UPDATE PostList
+SET pay = pay + 20000
+FROM StructureCompany
+WHERE experience > 20;
+
+UPDATE PostList
+SET pay = pay + 30000
+FROM StructureCompany
+WHERE experience > 30;
+
+UPDATE PostList
+SET pay = pay + 50000
+FROM StructureCompany
+WHERE experience > 30;
+
+SELECT subdivision_name
+FROM SubdivisionList
+WHERE(SELECT employee_id
+    FROM StructureCompany
+    WHERE count(employee_id)>10);
+
+SELECT count(employee_id) as emp_count , subdivision_name
+FROM StructureCompany, SubdivisionList
+GROUP BY SubdivisionList
+WHERE emp_count>10
+
