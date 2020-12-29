@@ -449,9 +449,39 @@ row_number() over(ORDER BY model desc) second
 FROM Product
 ) t
 WHERE first >3 AND second >3
-
-
-
+91)
+SELECT CAST(AVG(CAST(sum AS NUMERIC(6,2))) AS NUMERIC(6,2)) avg_paint
+FROM (Select B_Q_ID, sum(B_VOL) sum FROM utb
+GROUP BY b_q_id
+UNION
+SELECT q_id, 0 FROM utq 
+WHERE q_id NOT IN(select b_q_id FROM utb)) t
+102)
+SELECT name FROM Passenger
+WHERE id_psg in(
+SELECT id_psg FROM trip t,pass_in_trip tr
+WHERE t.trip_no=tr.trip_no
+GROUP BY id_psg
+HAVING COUNT(DISTINCT CASE 
+WHEN town_from<=town_to 
+THEN town_from+town_to 
+ELSE town_to+town_from END)=1
+)
+103)
+SELECT
+MIN(t1.trip_no) min1,MIN(t2.trip_no) min2,MIN(t3.trip_no) min3,MAX(t1.trip_no) max1,MAX(t2.trip_no) max2,MAX(t3.trip_no) max3
+FROM trip t1, trip t2, trip t3
+WHERE t2.trip_no > t1.trip_no AND t3.trip_no > t2.trip_no
+108)
+SELECT DISTINCT t1.B_VOL a, t2.B_VOL b, t3.B_VOL c FROM utb t1, utb t2, utb t3
+WHERE t1.B_VOL < t2.B_VOL AND t2.B_VOL < t3.B_VOL
+AND NOT (SQRT( SQUARE(t1.B_VOL) + SQUARE(t2.B_VOL)) < t3.B_VOL)
+110)
+SELECT name FROM passenger
+WHERE id_psg in(
+SELECT id_psg FROM pass_in_trip tr join trip t on tr.trip_no = t.trip_no
+WHERE time_in < time_out AND datepart(dw, date) = 7
+)
 
 
 
